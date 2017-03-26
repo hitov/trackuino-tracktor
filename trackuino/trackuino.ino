@@ -64,6 +64,13 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
+  delay(1000);
+  Serial.begin(9600);
+
+  Serial.println("AT+DMOSETGROUP=0,144.8000,144.8000,1,2,1,1");
+
+  delay(100);
+
   Serial.begin(GPS_BAUDRATE);
 #ifdef DEBUG_RESET
   Serial.println("RESET");

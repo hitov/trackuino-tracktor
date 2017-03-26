@@ -39,8 +39,8 @@
 // - Cars:       9
 // - Home:       0
 // - IGate:      5
-#define S_CALLSIGN      "MYCALL"
-#define S_CALLSIGN_ID   11
+#define S_CALLSIGN      "LZ1ARM"
+#define S_CALLSIGN_ID   0
 
 // Destination callsign: APRS (with SSID=0) is usually okay.
 #define D_CALLSIGN      "APRS"
@@ -56,7 +56,7 @@
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
 // it is to noise. 
-#define APRS_COMMENT    "Trackuino reminder: replace callsign with your own"
+#define APRS_COMMENT    ""
 
 
 // --------------------------------------------------------------------------
@@ -87,7 +87,7 @@
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
-#define GPS_BAUDRATE  9600
+#define GPS_BAUDRATE  4800
 
 
 // --------------------------------------------------------------------------
