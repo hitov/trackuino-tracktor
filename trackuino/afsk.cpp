@@ -194,7 +194,7 @@ bool afsk_flush()
       
     phase += phase_delta;
     uint8_t s = afsk_read_sample((phase >> 7) & (TABLE_SIZE - 1));
-
+    s /= 4;
 #ifdef DEBUG_AFSK
     Serial.print((uint16_t)s);
     Serial.print('/');

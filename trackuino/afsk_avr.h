@@ -24,7 +24,7 @@
 #include <avr/pgmspace.h>
 #include "config.h"
 
-#define AFSK_ISR ISR(TIMER2_OVF_vect)
+#define AFSK_ISR ISR(TIMER0_OVF_vect)
 
 // Exported consts
 extern const uint32_t MODEM_CLOCK_RATE;
@@ -36,11 +36,11 @@ extern const uint32_t PLAYBACK_RATE;
 extern const uint8_t afsk_sine_table[] PROGMEM;
 
 // Inline functions (this saves precious cycles in the ISR)
-#if AUDIO_PIN == 3
-#  define OCR2 OCR2B
+#if AUDIO_PIN == 6
+#  define OCR0 OCR0A
 #endif
-#if AUDIO_PIN == 11
-#  define OCR2 OCR2A
+#if AUDIO_PIN == 5
+#  define OCR0 OCR0B
 #endif
 
 inline uint8_t afsk_read_sample(int phase)
@@ -50,7 +50,7 @@ inline uint8_t afsk_read_sample(int phase)
 
 inline void afsk_output_sample(uint8_t s)
 {
-  OCR2 = s;
+  OCR0 = s;
 }
 
 inline void afsk_clear_interrupt_flag()
@@ -61,15 +61,15 @@ inline void afsk_clear_interrupt_flag()
 #ifdef DEBUG_MODEM
 inline uint16_t afsk_timer_counter()
 {
-  uint16_t t = TCNT2;
-  if ((TIFR2 & _BV(TOV2)) && t < 128)
+  uint16_t t = TCNT0;
+  if ((TIFR0 & _BV(TOV0)) && t < 128)
     t += 256;
   return t;
 }
 
 inline int afsk_isr_overrun()
 {
-  return (TIFR2 & _BV(TOV2));
+  return (TIFR0 & _BV(TOV0));
 }
 #endif
 

@@ -64,7 +64,7 @@
 // --------------------------------------------------------------------------
 
 // TX delay in milliseconds
-#define TX_DELAY      300
+#define TX_DELAY      1300
 
 // --------------------------------------------------------------------------
 // Tracker config (trackuino.pde)
@@ -87,7 +87,7 @@
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
-#define GPS_BAUDRATE  4800
+#define GPS_BAUDRATE  9600
 
 
 // --------------------------------------------------------------------------
@@ -98,20 +98,20 @@
 // PWM, so the only two options are pins 3 and 11.
 // Pin 11 doubles as MOSI, so I suggest using pin 3 for PWM and leave 11 free
 // in case you ever want to interface with an SPI device.
-#define AUDIO_PIN       3
+#define AUDIO_PIN       6
 
 // Pre-emphasize the 2200 tone by 6 dB. This is actually done by 
 // de-emphasizing the 1200 tone by 6 dB and it might greatly improve
 // reception at the expense of poorer FM deviation, which translates
 // into an overall lower amplitude of the received signal. 1 = yes, 0 = no.
-#define PRE_EMPHASIS    1
+#define PRE_EMPHASIS    0
 
 // --------------------------------------------------------------------------
 // Radio config (radio_hx1.cpp)
 // --------------------------------------------------------------------------
 
 // This is the PTT pin
-#define PTT_PIN           4
+#define PTT_PIN           16
 
 // --------------------------------------------------------------------------
 // Sensors config (sensors.cpp)
@@ -194,7 +194,7 @@
 // This is the LED pin (13 on Arduinos). The LED will be on while the AVR is
 // running and off while it's sleeping, so its brightness gives an indication
 // of the CPU activity.
-#define LED_PIN                 13
+#define LED_PIN                 7
 
 // Debug info includes printouts from different modules to aid in testing and
 // debugging.
