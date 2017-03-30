@@ -194,7 +194,7 @@ bool afsk_flush()
       
     phase += phase_delta;
     uint8_t s = afsk_read_sample((phase >> 7) & (TABLE_SIZE - 1));
-    s /= 4;
+
 #ifdef DEBUG_AFSK
     Serial.print((uint16_t)s);
     Serial.print('/');
@@ -204,6 +204,9 @@ bool afsk_flush()
     if (phase_delta == PHASE_DELTA_1200)
       s = s / 2 + 64;
 #endif
+
+    //Volume adjust
+    s = ((uint16_t) s * AUDIO_VOLUME) >> 8;
 
 #ifdef DEBUG_AFSK
     Serial.print((uint16_t)s);

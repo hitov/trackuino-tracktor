@@ -106,6 +106,9 @@
 // into an overall lower amplitude of the received signal. 1 = yes, 0 = no.
 #define PRE_EMPHASIS    0
 
+// Audio volume in Q8 format.
+// 0 is 0%, 255 is 100%
+#define AUDIO_VOLUME 63
 // --------------------------------------------------------------------------
 // Radio config (radio_hx1.cpp)
 // --------------------------------------------------------------------------
