@@ -88,25 +88,37 @@ void afsk_timer_setup()
   
   // Set fast PWM mode with TOP = 0xff: WGM22:0 = 3  (p.150)
   // This allows 256 cycles per sample and gives 16M/256 = 62.5 KHz PWM rate
+#if AUDIO_TIMER == 2
+  TCCR2A |= _BV(WGM21) | _BV(WGM20);
+  TCCR2B &= ~_BV(WGM22);
+#elif AUDIO_TIMER == 0
   TCCR0A |= _BV(WGM01) | _BV(WGM00);
   TCCR0B &= ~_BV(WGM02);
-  
+#endif
   // Phase correct PWM with top = 0xff: WGM22:0 = 1 (p.152 and p.160))
   // This allows 510 cycles per sample and gives 16M/510 = ~31.4 KHz PWM rate
   //TCCR2A = (TCCR2A | _BV(WGM20)) & ~_BV(WGM21);
   //TCCR2B &= ~_BV(WGM22);
-  
-#if AUDIO_PIN == 5
-  // Do non-inverting PWM on pin OC2A (arduino pin 11) (p.159)
-  // OC2B (arduino pin 3) stays in normal port operation:
-  // COM2A1=1, COM2A0=0, COM2B1=0, COM2B0=0
-  TCCR0A = (TCCR0A | _BV(COM0A1)) & ~(_BV(COM0A0) | _BV(COM0B1) | _BV(COM0B0));
-#endif  
 
-#if AUDIO_PIN == 6
+#if AUDIO_PIN == 11
+  // Do non-inverting PWM on pin OC2A (arduino pin 11) (p.159)
+  // OC2A (arduino pin 11) stays in normal port operation:
+  // COM2A1=1, COM2A0=0, COM2B1=0, COM2B0=0
+  TCCR2A = (TCCR2A | _BV(COM2A1)) & ~(_BV(COM2A0) | _BV(COM2B1) | _BV(COM2B0));
+#elif AUDIO_PIN == 3
   // Do non-inverting PWM on pin OC2B (arduino pin 3) (p.159).
-  // OC2A (arduino pin 11) stays in normal port operation: 
+  // OC2B (arduino pin 3) stays in normal port operation:
   // COM2B1=1, COM2B0=0, COM2A1=0, COM2A0=0
+  TCCR2A = (TCCR2A | _BV(COM2B1)) & ~(_BV(COM2B0) | _BV(COM2A1) | _BV(COM2A0));
+#elif AUDIO_PIN == 5
+  // Do non-inverting PWM on pin OC2A (arduino pin 11) (p.159)
+  // OC0B (arduino pin 5) stays in normal port operation:
+  // COM0B1=1, COM0B0=0, COM0A1=0, COM0A0=0
+  TCCR0A = (TCCR0A | _BV(COM0B1)) & ~(_BV(COM0B0) | _BV(COM0A1) | _BV(COM0A0));
+#elif AUDIO_PIN == 6
+  // Do non-inverting PWM on pin OC2B (arduino pin 3) (p.159).
+  // OC0A (arduino pin 6) stays in normal port operation:
+  // COM0A1=1, COM0B0=0, COM0B1=0, COM0A0=0
   TCCR0A = (TCCR0A | _BV(COM0A1)) & ~(_BV(COM0B0) | _BV(COM0B1) | _BV(COM0A0));
 #endif
   
@@ -116,28 +128,39 @@ void afsk_timer_setup()
   //TCCR2B = (TCCR2B & ~(_BV(CS22) | _BV(CS20))) | _BV(CS21);
 
   // Set initial pulse width to the rest position (0v after DC decoupling)
-  OCR0 = REST_DUTY;
+  OCR = REST_DUTY;
 }
 
 void afsk_timer_start()
 {
   // Clear the overflow flag, so that the interrupt doesn't go off
   // immediately and overrun the next one (p.163).
-  TIFR0 |= _BV(TOV0);       // Yeah, writing a 1 clears the flag.
+  
+#if AUDIO_TIMER == 2
+   TIFR2 |= _BV(TOV2);       // Yeah, writing a 1 clears the flag.
 
   // Enable interrupt when TCNT2 reaches TOP (0xFF) (p.151, 163)
+  TIMSK2 |= _BV(TOIE2);
+#elif AUDIO_TIMER == 0
+  TIFR0 |= _BV(TOV0);       // Yeah, writing a 1 clears the flag.
+
+  // Enable interrupt when TCNT0 reaches TOP (0xFF) (p.151, 163)
   TIMSK0 |= _BV(TOIE0);
+#endif
 }
 
 void afsk_timer_stop()
 {
   // Output 0v (after DC coupling)
-  OCR0 = REST_DUTY;
-
+  OCR = REST_DUTY;
+#if AUDIO_TIMER == 2
   // Disable playback interrupt
   TIMSK0 &= ~_BV(TOIE0);
+#elif AUDIO_TIMER == 0
+  // Disable playback interrupt
+  TIMSK0 &= ~_BV(TOIE0);
+#endif
 }
-
 
 
 #endif // ifdef AVR
