@@ -108,13 +108,28 @@
 
 // Audio volume in Q8 format.
 // 0 is 0%, 255 is 100%
-#define AUDIO_VOLUME 63
+#define AUDIO_VOLUME    63
 // --------------------------------------------------------------------------
 // Radio config (radio_hx1.cpp)
 // --------------------------------------------------------------------------
 
 // This is the PTT pin
 #define PTT_PIN           16
+
+// Invert PTT pin
+#define PTT_INV           1
+
+// Power mode select
+// 0 - none
+// 1 - low
+// 2 - high
+// Comment this if not used
+#define POWER_MODE 2
+
+// Power mode pin
+// If POWER_MODE is 1, this pin is used for selecting output power mode
+// Otherwise this pin does't matter
+#define POWER_PIN         19         
 
 // --------------------------------------------------------------------------
 // Sensors config (sensors.cpp)

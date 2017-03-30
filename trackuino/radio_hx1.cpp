@@ -29,19 +29,39 @@ void RadioHx1::setup()
 {
   // Configure pins
   pinMode(PTT_PIN, OUTPUT);
+#ifdef POWER_MODE
+  pinMode(POWER_PIN, OUTPUT);
+#endif
+  
+#if PTT_INV == 0
+  pin_write(PTT_PIN, LOW);
+#else
   pin_write(PTT_PIN, HIGH);
+#endif
   pinMode(AUDIO_PIN, OUTPUT);
 }
 
 void RadioHx1::ptt_on()
 {
+#if PTT_INV == 0
+  pin_write(PTT_PIN, HIGH);
+#else
   pin_write(PTT_PIN, LOW);
-  pin_write(19, HIGH); //High power
+#endif
+
+#if POWER_MODE == 2
+  pin_write(POWER_PIN, HIGH); //High power select
+#elif POWER_MODE == 1
+  pin_write(POWER_PIN, LOW); //Low power select
+#endif
+
   delay(25);   // The HX1 takes 5 ms from PTT to full RF, give it 25
 }
 
 void RadioHx1::ptt_off()
 {
   pin_write(PTT_PIN, HIGH);
-  pin_write(19, LOW); //Low power
+#ifdef POWER_MODE
+  pin_write(POWER_PIN, LOW); //Low power
+#endif
 }
