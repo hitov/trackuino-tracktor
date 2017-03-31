@@ -44,6 +44,7 @@
 #include "power.h"
 #include "sensors_avr.h"
 #include "sensors_pic32.h"
+#include "board.h"
 
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
@@ -58,71 +59,18 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 // Module variables
 static int32_t next_aprs = 0;
 
-
 void setup()
 {
-
-    DDRC |= 1 << 2; // DPTT output
-    PORTC |= 1 << 2; // DPTT RX
-    DDRC |= 1 << 4; //PD output
-    PORTC |= 1 << 4; //PD off
-    DDRC |= 1 << 5; //High/Low output
-    PORTC &= ~(1 << 5); //Low power
-    //PORTC |= (1 << 5); //HIGH power
-
-    DDRD |= 1 << 7; // LED output
-    PORTD |= 1 << 7; // LED RX
-
-    DDRC |= 1 << 3; // GPS RESET output
-    PORTC &= ~(1 << 3); // GPS RESET active
-    PORTC |= (1 << 3); // GPS RESET active
-
-    DDRD |= 1 << 5; //High/Low output
-    PORTD &= ~(1 << 5); //Low power
-
-    DDRD |= 1 << 4; //Bluetooth enble
-    PORTD &= ~(1 << 4); //Bluetooth disable
+  board_gpio_setup();
   
-  pinMode(LED_PIN, OUTPUT);
-  pin_write(LED_PIN, HIGH);
-
-  delay(1000);
-  Serial.begin(9600);
-
-
-      PORTC &= ~(1 << 3); // GPS RESET active
-    delay(100);
-    PORTC |= (1 << 3); // GPS RESET active
-   
-  delay(2000);
-  
-  Serial.println("$PMTK161,0*28");
-  delay(500L);
-  Serial.println("AT+DMOSETGROUP=1,144.8000,144.8000,0000,0,0000");
-  delay(500L);
-  Serial.println("AT+DMOSETVOLUME=3");
-  delay(500L);
-  
-  //Serial.println("AT+DMOSETGROUP=0,144.8000,144.8000,1,2,1,1");
-  //Serial.println("$PMTK183*38");
-  //Serial.println("$PMTK104*37\r\n");
-  Serial.println("$PMTK104*37\r\n");
-  //Serial.println("$PMTK104*37\r\n");
-  delay(500);
-//
-//  DDRD |= 1<<6;
-//  PORTD |= 1<<6;
-//  TCCR0A = (1<<WGM01);
-//  OCR0A = 127;
-//  TCCR0B = (1 << CS01) | (1 << CS00);
-//  TCCR0A = _BV(COM0A1) | _BV(WGM01) | _BV(WGM00);
-//  TCCR0B = _BV(CS00);
-
   Serial.begin(GPS_BAUDRATE);
 #ifdef DEBUG_RESET
   Serial.println("RESET");
 #endif
 
+  gps_standby();
+  radio_setup();
+  gps_wakeup();
   buzzer_setup();
   afsk_setup();
   gps_setup();
